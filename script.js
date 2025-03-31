@@ -1,21 +1,26 @@
-let model;
+export async function loadModel() {
+    const modelURL = "./model.json";
+    const metadataURL = "./metadata.json";
 
-async function loadModel() {
-    const modelURL = "model.json";
-    const metadataURL = "metadata.json";
-
-    model = await tmImage.load(modelURL, metadataURL);
-    console.log("Model loaded!");
+    try {
+        const model = await tmImage.load(modelURL, metadataURL);
+        console.log("Model loaded successfully!");
+        return model;
+    } catch (error) {
+        console.error("Error loading model:", error);
+    }
 }
 
 async function predict() {
+    const model = await loadModel();
+
     if (!model) {
-        document.getElementById("result").innerText = "Loading model...";
-        await loadModel();
+        document.getElementById("result").innerText = "Model failed to load.";
+        return;
     }
 
     const imageElement = document.getElementById("preview");
-    if (imageElement.src === "") {
+    if (!imageElement.src) {
         document.getElementById("result").innerText = "Please upload an image first.";
         return;
     }
@@ -37,7 +42,7 @@ document.getElementById("imageUpload").addEventListener("change", function(event
     };
     reader.readAsDataURL(file);
 });
-if (typeof tmImage === "undefined") {
-    console.error("tmImage is not loaded. Check if the script order is correct in index.html.");
-}
+
+// Ensure the model loads as soon as the page starts
+loadModel();
 
