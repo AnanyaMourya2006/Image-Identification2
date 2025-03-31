@@ -37,3 +37,7 @@ document.getElementById("imageUpload").addEventListener("change", function(event
     };
     reader.readAsDataURL(file);
 });
+if (typeof tmImage === "undefined") {
+    console.error("tmImage is not loaded. Check if the script order is correct in index.html.");
+}
+
